@@ -1,0 +1,38 @@
+CREATE TABLE IF NOT EXISTS `user` (
+  `name` varchar(50) NOT NULL,	
+  `username` varchar(50) NOT NULL,
+  `password` varchar(200) NOT NULL,
+  PRIMARY KEY (`username`)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS `posts` (
+  `username` varchar(50) NOT NULL,
+  `message` longtext,
+  `postid` varchar(100) NOT NULL,
+  `tstamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS `taglist` (
+  `postid` varchar(100) NOT NULL,
+  `tag` varchar(50) NOT NULL,
+  `tstamp` timestamp NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `grouplist` (
+  `groupname` varchar(50) NOT NULL,
+  `groupmember` varchar(50) NOT NULL,
+  `admin` varchar(50) NOT NULL,
+  `accepted` varchar(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `groupposts` (
+	`groupname` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `message` longtext,
+  `postid` varchar(100) NOT NULL,
+  `tstamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
