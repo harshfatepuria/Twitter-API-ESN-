@@ -3,26 +3,45 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>SEARCH POSTS</title>
-<link href="default.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="login.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="../default.css" rel="stylesheet" type="text/css" media="screen" />
+<link href="../login.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 
 
 
 <?php
-$pageid=5;
 session_start();
+include_once("config.php");
+include_once("inc/twitteroauth.php");
 
 if(isset($_SESSION['status']) && $_SESSION['status']=='verified') 
 {
-	header("Location: user/user_home.php");
+	$screenname=$_SESSION['screenname'];
+	$twitterid=$_SESSION['twitterid'];
+	$oauth_token=$_SESSION['oauth_token'];
+	$oauth_token_secret=$_SESSION['oauth_token_secret'];
+	
+	
+	
+	/*
+	$screenname=$_SESSION['request_vars']['screen_name'];
+	$twitterid=$_SESSION['request_vars']['user_id'];
+	$oauth_token=$_SESSION['request_vars']['oauth_token'];
+	$oauth_token_secret=$_SESSION['request_vars']['oauth_token_secret'];
+	//$connection = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $oauth_token, $oauth_token_secret);
+	*/
+	
+}
+else
+{
+	header("Location: ../index.php");
 }
 
-ini_set('display_errors', 1);
-	require_once('TwitterAPIExchange.php');
+	require_once('../TwitterAPIExchange.php');
+	ini_set('display_errors', 1);
 	$settings = array(
-    'oauth_access_token' => "85261588-NFIBgDxNseUYw6qs032n0tNF0IaHvAL7ZUhYUaBWy",
-    'oauth_access_token_secret' => "sG14LAGxy4H5Z18mepMzXG3kvdzPrRb31dS4dwPr7pxAE",
+    'oauth_access_token' => $oauth_token,
+    'oauth_access_token_secret' => $oauth_token_secret,
     'consumer_key' => "SMPUo3Upr80N4vtph8fBtipg7",
     'consumer_secret' => "kjlNLiAsz2FD2RTGFgtOszcfxLgAN4x8VWccUENvxZkNzCzAU0"
 	);
@@ -33,25 +52,22 @@ ini_set('display_errors', 1);
 
 
 <body>
-	
-	
 <!-- start header -->
 <div id="header">
 	<div id="logo">
-		<h1><a href="#"><span>$chat</span></a></h1>
+		<h1><a><span>$chat</span></a></h1>
 		
-		<div class="signin" align="left">
-				<div class="credential">
-				<a href="loginProcess.php"><img src="images/sign-in-with-twitter-l.png" width="151" height="24" border="0" /></a>
-				</div>
+		<div class="register" align="right">
+			<span class="welcome">Welcome, <?php echo $screenname;?>!</span><br><br>
+			<a href="logout.php">Logout</a>
 		</div>
 		
 	</div>
 	<div id="menu">
 		<ul id="main">
-			<li><a  href="index.php">Home</a></li>
+			<li><a  href="user_home.php">Home</a></li>
 			<li class="current_page_item"><a>Search Posts</a></li>
-			<li><a href="about_us.php">About Us</a></li>
+			<li><a href="../group/group_create.php">Group</a></li>
 		</ul>
 	</div>
 </div>

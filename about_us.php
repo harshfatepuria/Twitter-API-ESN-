@@ -11,56 +11,9 @@
 <?php
 $pageid=3;
 session_start();
-if(isset($_SESSION["username"]))
+if(isset($_SESSION['status']) && $_SESSION['status']=='verified') 
 {
-	header("Location: user_home.php");
-}
-
-$username=$password="";
-if ($_SERVER["REQUEST_METHOD"] == "POST")
-{
-   $username = $_POST["username"];
-   $password = $_POST["password"];
-
-
-//HASHING PASSWORD.
-   $salt="$2a$";
-   $hash=md5($salt.$password);
-
-
-//SETTING UP CONNECTION
-$con=mysqli_connect("localhost","root","","chat");
-
-   $query="SELECT * FROM user WHERE username ='$username' and password ='$hash'";
-   if(!mysqli_query($con,$query))
-   {
-   	echo '<script>
-			alert("ERROR!! Please try later.");
-		</script>';
-   }
-   else
-   {
-	$result=mysqli_query($con,$query);
-	$num_rows=mysqli_num_rows($result);
-
-	//IF USERNAME AND PASSWORD ARE NOT PRESENT IN THE DATABASE.
-	if($num_rows==0)
-	{
-		echo '<script>
-			alert("Invalid id/password!");
-		</script>';
-	}
-	else
-	{
-
-		//SETTING UP SESSION.
-		session_start();
-		$_SESSION['username']=$username;
-		$_SESSION['pageid']=$pageid;
-	    	header("Location: user_home.php");  //REDIRECTING USER TO HIS HOME PAGE.
-	}
-   }
-mysqli_close($con); //TERMINATING CONNECTION.
+	header("Location: user/user_home.php");
 }
 ?>
 
@@ -74,26 +27,11 @@ mysqli_close($con); //TERMINATING CONNECTION.
 <div id="header">
 	<div id="logo">
 		<h1><a href="index.php"><span>$chat</span></a></h1>
-		<!--<p>Designed By Decepticons</p>-->
 		
 		<div class="signin" align="left">
-			<form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>">
-				<table class="credential">
-				<tr>
-				<td><label for="username">Username:</label></td>
-				<td><input class="username" name="username" required="required" maxlength="40"></td>
-				</tr>
-				<tr>
-				<td><label for="password">Password:</label></td>
-				<td><input class="password" name="password" type="password" required="required" maxlength="40"></td>
-				</tr>
-				</table>
-				<div class="credential">
-				<input value="LOGIN" type="submit">
-				<input value="RESET" type="reset">
-				<a href="register.php">REGISTER</a>
+			<div class="credential">
+				<a href="loginProcess.php"><img src="images/sign-in-with-twitter-l.png" width="151" height="24" border="0" /></a>
 				</div>
-			</form>
 		</div>
 		
 	</div>

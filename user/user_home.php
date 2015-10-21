@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>GROUP</title>
+<title>USER</title>
 <link href="../default.css" rel="stylesheet" type="text/css" media="screen" />
 <link href="../login.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="group.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
 
 
 <?php
+$pageid=4;
 session_start();
 
 include_once("config.php");
@@ -45,26 +45,9 @@ ini_set('display_errors', 1);
     'consumer_secret' => "kjlNLiAsz2FD2RTGFgtOszcfxLgAN4x8VWccUENvxZkNzCzAU0"
 	);
 
-
-if(isset($_REQUEST['grp'])){
-		$_SESSION['grpname']=$_REQUEST['grp']; 
-		$grpname=$_SESSION['grpname'];
-		}
-else{
-$grpname=$_SESSION['grpname'];
-}
-
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_REQUEST['postByUser']))
 {
 $msg=trim($_REQUEST['postByUser']);
-if(strcmp($msg,"")==0)
-{
-	echo '<script>alert("Please write something!");</script>';
-}
-else
-{
 $settings1 = array(
     'oauth_access_token' => $oauth_token,
     'oauth_access_token_secret' => $oauth_token_secret,
@@ -84,15 +67,15 @@ $twitter->buildOauth($url, $requestMethod)
              ->setPostfields($postfields)
              ->performRequest();
              
-             
-$con=mysqli_connect("localhost","tweet","abc123","tweetdb"); 
-$grpname=$_SESSION['grpname'];
-$query="INSERT INTO tgroupposts (groupname,userscreenname,usertwitterid,message) VALUES ('$grpname','$screenname','$twitterid','$msg')";          				
-$result=mysqli_query($con,$query);                  
-mysqli_close($con);             
-}                  
 }
 ?>
+
+
+
+
+
+
+
 
 
 <body>
@@ -110,87 +93,23 @@ mysqli_close($con);
 	</div>
 	<div id="menu">
 		<ul id="main">
-			<li><a href="../user/user_home.php">Home</a></li>
-			<li><a href="../user/search_post_byUser.php">Search Posts</a></li>
-			<li class="current_page_item"><a>Group</a></li>
+			<li class="current_page_item"><a>Home</a></li>
+			<li><a href="search_post_byUser.php">Search Posts</a></li>
+			<li><a href="../group/group_create.php">Group</a></li>
 		</ul>
 	</div>
-		
-	
-	
-	
-		
-	
-	
-	
-	
 </div>
 <!-- end header -->
+
+
+
 
 <div id="wrapper">
 	<!-- start page -->
 	<div id="page">
-		
-
-
-		<div id="sidebar1" class="sidebar">
-			<ul>
-				<li>
-					<h2>GROUPS</h2>
-					<ul>
-						<?php
-							$con=mysqli_connect("localhost","tweet","abc123","tweetdb");
-							$query="SELECT * FROM tgrouplist WHERE userscreenname ='$screenname' and usertwitterid='$twitterid'";				
-							$result=mysqli_query($con,$query);
-							while(($row=mysqli_fetch_array($result)))
-							{
-								
-								if(strcmp($row['groupname'],$grpname)==0)
-								{
-									echo '<li class="current_page_item"><strong><a>'.$row['groupname'].'</a></strong></li>';
-								}
-								else
-								{
-									echo '<li><a href="group_home.php?grp='.$row['groupname'].'">'.$row['groupname'].'</a></li>';
-								}
-							}
-							mysqli_close($con);
-						?>
-					</ul>
-				</li>
-				
-				
-				<li>
-					<ul>
-						<li><a href="group_create.php">Create Group</a></li>
-						<li><a href="group_manage.php">Add Users To Group</a></li>
-					</ul>
-				</li>
-				<!-- can add more <li> like above to create different sections here-->
-			</ul>
-		</div>
-
-
 
 		<!-- start content -->
 		<div id="content">
-			<div class="post">
-				<h2>GROUP: <?php echo $grpname;?></h2>
-				<p>MEMBERS:&nbsp&nbsp
-				<?php
-					$con=mysqli_connect("localhost","tweet","abc123","tweetdb");
-							$query="SELECT * FROM tgrouplist WHERE groupname ='$grpname'";				
-							$result=mysqli_query($con,$query);
-							while(($row=mysqli_fetch_array($result)))
-							{
-								echo "@".$row['userscreenname']."&nbsp&nbsp&nbsp";
-							}
-							mysqli_close($con);
-				?>
-				<p>
-			</div>
-			
-			
 			<div class="post">
 				<form action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
 				<textarea class="postByUser" name="postByUser" rows="3" cols="50" placeholder="Write your message here." autofocus maxlength="140"></textarea>
@@ -203,27 +122,55 @@ mysqli_close($con);
 			
 			
 			
-			<div class="post" id="ref">
-				
-				
-			</div>
-			
-<script src="../jquery.js"></script>
-<script>
-window.onload=function()
-{
+<?php
+	
+	
+	
+	
+	$url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+	$getfield = '?screen_name=';
+	$requestMethod = 'GET';
+	$twitter = new TwitterAPIExchange($settings);
+	$getfield=$getfield.$screenname;
+	$res=$twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest();
+	$result=json_decode($res);
+	$num_rows=count($result);
 
-	$('#ref').load('group_display.php');
-	setInterval(function()
+
+	if($num_rows==0)
 	{
-		$('#ref').load('group_display.php');
-	},2000);
-}
-</script>		
-			
-			
-			
-			
+		echo '<div class="post">
+				<h1 class="title">No posts available.</h1>
+				<p class="byline"></p>
+				<div class="entry" id="entry">';
+	}			
+	else
+	{
+		echo '<div class="post">
+				<h1 class="title">Your Recent Posts</h1>
+				<p class="byline"></p>
+				<div class="entry" id="entry">';
+				
+				for ($i=0; $i<count($result); $i++)
+				{
+					echo '<div class="boxlist">
+					<div class="ngo_list">
+					<div>
+						<span>'.$result[$i]->created_at.'</span>
+					</div>
+					<div>
+						<span>'.$result[$i]->text.'</span>
+					</div>
+					</div>
+					</div>
+					';
+
+				}
+	}
+?>							
+
+				</div>
+			</div>
 		</div>
 			
 		<!-- end content -->
