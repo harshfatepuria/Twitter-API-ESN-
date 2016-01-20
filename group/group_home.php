@@ -80,9 +80,6 @@ $postfields = array(
 );
 
 $twitter = new TwitterAPIExchange($settings1);
-$twitter->buildOauth($url, $requestMethod)
-             ->setPostfields($postfields)
-             ->performRequest();
              
              
 $con=mysqli_connect("localhost","<username>","<password>","<db name>");
