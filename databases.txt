@@ -18,3 +18,8 @@ CREATE TABLE IF NOT EXISTS `tgroupposts` (
   `message` varchar(150),
   `tstamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+A temporary password is generated for root@localhost: t=hkjr<#k8kZ
+
+If you lose this password, please consult the section How to Reset the Root Password in the MySQL reference manual.

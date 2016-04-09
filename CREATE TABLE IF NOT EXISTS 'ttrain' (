@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS 'ttrain' (
+  'tword' varchar(141) NOT NULL,	
+  'tneg' FLOAT,
+  'tpos' FLOAT
+);
